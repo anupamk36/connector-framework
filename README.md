@@ -17,7 +17,7 @@ The API has endpoints for creating, updating, deleting, and fetching data from c
 
 ## Contributing
 
-Contributions are welcome! Please read the contributing guidelines before making any changes.
+Contributions are welcome!
 
 ## License
 
