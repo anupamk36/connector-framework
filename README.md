@@ -21,5 +21,5 @@ Contributions are welcome!
 
 ## License
 
-This project is licensed under the terms of the MIT license.# connector-leen-integration
+This project is licensed under the terms of the MIT license.# connector-framework
 # connector-framework
