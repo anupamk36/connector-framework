@@ -20,4 +20,4 @@ app.include_router(connector_router)
 
 @app.get("/")
 async def read_root():
-    return {"message": "Welcome to Cowbell Connector API"}
+    return {"message": "Welcome to Connector API"}
