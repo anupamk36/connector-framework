@@ -1,0 +1,4 @@
+env: dev
+image:
+  repository: 462314811735.dkr.ecr.us-west-2.amazonaws.com/connector
+  tag: "connector-1.0.17"

@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: connector
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: connector
+  template:
+    metadata:
+      labels:
+        app: connector
+      annotations:
+        instrumentation.opentelemetry.io/inject-python: opentelemetry/auto-instrumentation-to-collector
+        ad.datadoghq.com/scanner.checks: |
+            {
+              "openmetrics": {
+                "instances": [
+                  {
+                    "openmetrics_endpoint": "http://%%host%%:8080/metrics",
+                    "namespace": "scanners",
+                    "metrics": [
+                        "create_scan.*", "should.*", "is.*"
+                      ]
+                  }
+                ]
+              }
+            }
+    spec:
+      containers:
+        - name: connector
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+          envFrom:
+            - configMapRef:
+                name: connector
+          ports:
+            - containerPort: 8000
+              name: http
+              protocol: TCP
+            - containerPort: 8080
+              name: metrics
+              protocol: TCP
+#          readinessProbe:
+#            httpGet:
+#              path: /ready
+#              port: 8000
+#            initialDelaySeconds: 15
+#            periodSeconds: 10
+#          livenessProbe:
+#            httpGet:
+#              path: /healthz
+#              port: 8000
+#            initialDelaySeconds: 20
+#            periodSeconds: 10

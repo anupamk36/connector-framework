@@ -1,0 +1,6 @@
+apiVersion: v2
+name: connector
+description: A Helm chart for moobot
+type: application
+version: 0.0.1
+appVersion: "1.0.17"

@@ -1,0 +1,120 @@
+{{- if eq .Values.env "dev" }}
+kind: ConfigMap
+metadata:
+  name: connector
+apiVersion: v1
+data:
+  # worker pod connection details
+  INTERVAL_BETWEEN_SCANS_IN_SECONDS: '0' # throttle the rate of scans. Higher value more delay between scans
+  MAX_SUBDOMAINS_TO_SCAN: '10'
+  MAX_SUBDOMAIN_TO_SCAN: '5'
+  MIN_SECONDS_BEFORE_RESCAN: '3600'
+  SCANNER_DEFAULT_MAX_RUNTIME: '600'
+  WEB_SCANNER_INTERNAL_URL: http://web-service
+  WORKER_POD_MAX_CONCURRENT_TASKS: '100'
+  # platform connection details
+  PLATFORM_ACC_AWS_USER: dsuser
+  PLATFORM_ACC_REGION: us-west-2
+  PLATFORM_ACC_S3_BUCKET: milklake
+  # rds details on platform account
+  RDS_DB_DATABASE: cbid
+  RDS_DB_HOSTNAME: dsdev.cwyuuewdwuoo.us-west-2.rds.amazonaws.com
+  RDS_DB_PORT: '5432'
+  RDS_DB_USERNAME: postgres
+  # scanner db details
+  SCANNER_DB_DATABASE: dev
+  SCANNER_DB_HOSTNAME: scanners.cluster-c76206mks2gq.us-west-2.rds.amazonaws.com
+  SCANNER_DB_PORT: '5432'
+  SCANNER_DB_REGION: us-west-2
+  SCANNER_DB_USERNAME: iam_user
+  # parlor 
+  PARLOR_URL: http://parlor-moobot-dev-internal.morecowbell.ai:30001/parlor
+  # US
+  FH_CLIENT_PATH_US: https://admin.meetmoo.ai/api/webhook/v1/hooks/SHC63FGKHNOYSU5T
+  # UK
+  FH_CLIENT_PATH_UK: https://admin.meetmoo.ai/api/webhook/v1/hooks/SHC63FGKHNOYSU5T
+  # KINESIS_SCANNER_STREAM 
+  KINESIS_SCANNER_STREAM: kinesis-scanner-dev
+  SKIP_FIREHOOK_UPDATE: 'True'
+{{- end }}
+---
+{{- if eq .Values.env "staging" }}
+kind: ConfigMap
+metadata:
+  name: connector
+apiVersion: v1
+data:
+  # worker pod connection details
+  INTERVAL_BETWEEN_SCANS_IN_SECONDS: '0' # throttle the rate of scans. Higher value more delay between scans
+  MAX_SUBDOMAINS_TO_SCAN: '10'
+  MAX_SUBDOMAIN_TO_SCAN: '5'
+  MIN_SECONDS_BEFORE_RESCAN: '3600'
+  SCANNER_DEFAULT_MAX_RUNTIME: '600'
+  WEB_SCANNER_INTERNAL_URL: http://web-service
+  WORKER_POD_MAX_CONCURRENT_TASKS: '100'
+  # platform connection details
+  PLATFORM_ACC_AWS_USER: dsuser
+  PLATFORM_ACC_REGION: us-west-2
+  PLATFORM_ACC_S3_BUCKET: milkpond
+  # rds details on platform account
+  RDS_DB_DATABASE: cbid
+  RDS_DB_HOSTNAME: dsdev.cwyuuewdwuoo.us-west-2.rds.amazonaws.com
+  RDS_DB_PORT: '5432'
+  RDS_DB_USERNAME: postgres
+  # scanner db details
+  SCANNER_DB_DATABASE: stg
+  SCANNER_DB_HOSTNAME: scanners.cluster-c76206mks2gq.us-west-2.rds.amazonaws.com
+  SCANNER_DB_PORT: '5432'
+  SCANNER_DB_REGION: us-west-2
+  SCANNER_DB_USERNAME: iam_user
+  # parlor 
+  PARLOR_URL: http://parlor-moobot-staging-internal.morecowbell.ai:30002/parlor
+  # US
+  FH_CLIENT_PATH_US: https://admin.morecowbell.ai/api/webhook/v1/hooks/JA36UOE742YKYA3P
+  # UK
+  FH_CLIENT_PATH_UK: https://console.cowshavebells.co.uk/api/webhook/v1/hooks/FOWRALFGA66Q4ZGF
+  # KINESIS_SCANNER_STREAM 
+  KINESIS_SCANNER_STREAM: kinesis-scanner-staging
+  SKIP_FIREHOOK_UPDATE: 'False'
+
+{{- end }}
+---
+{{- if eq .Values.env "prod" }}
+kind: ConfigMap
+metadata:
+  name: moo-web
+apiVersion: v1
+data:
+  # worker pod connection details
+  INTERVAL_BETWEEN_SCANS_IN_SECONDS: '0' # throttle the rate of scans. Higher value more delay between scans
+  MAX_SUBDOMAINS_TO_SCAN: '10'
+  MAX_SUBDOMAIN_TO_SCAN: '5'
+  MIN_SECONDS_BEFORE_RESCAN: '3600'
+  SCANNER_DEFAULT_MAX_RUNTIME: '600'
+  WEB_SCANNER_INTERNAL_URL: http://web-service
+  WORKER_POD_MAX_CONCURRENT_TASKS: '50'
+  # platform connection details
+  PLATFORM_ACC_AWS_USER: parlor_user
+  PLATFORM_ACC_REGION: us-west-2
+  PLATFORM_ACC_S3_BUCKET: milkpond-prod
+  # rds details on platform account
+  RDS_DB_DATABASE: cbid_prod
+  RDS_DB_HOSTNAME: parlor.cwsjjyjmxyqq.us-west-2.rds.amazonaws.com
+  RDS_DB_PORT: '5432'
+  RDS_DB_USERNAME: postgres
+  # scanner db details
+  SCANNER_DB_DATABASE: postgres
+  SCANNER_DB_HOSTNAME: scanners-prod.cluster-c76206mks2gq.us-west-2.rds.amazonaws.com
+  SCANNER_DB_PORT: '5432'
+  SCANNER_DB_REGION: us-west-2
+  SCANNER_DB_USERNAME: iam_user
+  # parlor 
+  PARLOR_URL: http://parlor-moobot-prod-internal.morecowbell.ai:30002/parlor
+  # US
+  FH_CLIENT_PATH_US: https://admin.cowbellcyber.ai/api/webhook/v1/hooks/PN2N5TQQD4D64TSK
+  # UK
+  FH_CLIENT_PATH_UK: https://console.cowbellcyber.co.uk/api/webhook/v1/hooks/LOLEIMV5YX76GFTK
+  # KINESIS_SCANNER_STREAM 
+  KINESIS_SCANNER_STREAM: kinesis-scanner-production
+  SKIP_FIREHOOK_UPDATE: 'False'
+{{- end }}

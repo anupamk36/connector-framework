@@ -1,10 +1,21 @@
 from fastapi import APIRouter, HTTPException, Depends
 import httpx
+import asyncio
+from sqlalchemy import text
 from src.utils.fetch_data import fetch_data_for_connection
-from src.schemas.connection import Connection, DeleteConnectionResponse
-from src.models.connection import ConnectionModel
+from src.endpoints.creation.create_connection import create_connection_logic
+from src.schemas.connection import (
+    Connection,
+    DeleteConnectionResponse,
+    CreateConnectionResponse,
+)
+from src.models.connection_orm import ConnectionModel
 from src.utils.database import get_db
+from src.endpoints.creation.connection_invite_token import (
+    create_connection_invite_token_logic,
+)
 from sqlalchemy.orm import Session
+from datetime import datetime
 import configparser
 
 # Read the configuration file
@@ -16,85 +27,13 @@ x_api_key = config["DEFAULT"]["x_api_key"]
 
 connector_router = APIRouter()
 
-
-# Route to create a connection
-@connector_router.post(
-    "/connector/create_connection", response_model=Connection, tags=["Connector"]
-)
-async def create_connection(
-    conn: Connection, organization_id: str, db: Session = Depends(get_db)
-):
-    try:
-        url = f"https://api.leen.dev/v1/provisioning/organizations/{organization_id}/connections"
-        payload = {
-            "vendor": conn.vendor.value,
-            "credentials": conn.credentials.dict(),  # Convert ConnectionType to dict
-            "identifier": conn.identifier,
-        }
-        headers = {"X-API-KEY": x_api_key, "Content-Type": "application/json"}
-        async with httpx.AsyncClient(timeout=30) as client:
-            response = await client.post(url, headers=headers, json=payload)
-        if response.status_code == 200:
-            connection_id = response.json()["id"]
-            new_conn = ConnectionModel(
-                id=connection_id,
-                organization_id=organization_id,
-                vendor=conn.vendor.value,
-                credentials=conn.credentials.dict(),
-                identifier=conn.identifier,
-            )
-            db.add(new_conn)
-            await fetch_data_for_connection(
-                x_connection_id=connection_id,
-                organization_id=organization_id,
-                vendor=conn.vendor.value,
-            )
-            db.commit()
-            db.refresh(new_conn)
-            detail = f"Connection created successfully for the connection_id: {connection_id} and organization_id: {organization_id}"
-            return Connection(
-                id=str(new_conn.id),
-                vendor=new_conn.vendor,
-                credentials=new_conn.credentials,
-                identifier=new_conn.identifier,
-                detail=detail,
-            )
-        else:
-            raise HTTPException(status_code=response.status_code, detail=response.text)
-    finally:
-        db.close()
-
-
-@connector_router.delete(
-    "/connector/delete_connection",
-    response_model=DeleteConnectionResponse,
-    tags=["Connector"],
-)
-async def delete_connection(
-    connection_id: str, organization_id: str, db: Session = Depends(get_db)
-):
-    try:
-        url = f"https://api.leen.dev/v1/provisioning/organizations/{organization_id}/connections/{connection_id}"
-        headers = {"X-API-KEY": x_api_key, "Content-Type": "application/json"}
-        async with httpx.AsyncClient() as client:
-            response = await client.delete(url, headers=headers)
-        if response.status_code == 200:
-            db_conn = (
-                db.query(ConnectionModel)
-                .filter(ConnectionModel.id == connection_id)
-                .first()
-            )
-            if db_conn:
-                db.delete(db_conn)
-                db.commit()
-            return {
-                "detail": f"Connection deleted successfully for the connection_id: {connection_id} and organization_id: {organization_id}"
-            }
-        else:
-            print(response.text)
-            raise HTTPException(status_code=response.status_code, detail=response.text)
-    finally:
-        db.close()
+# # Route to create invite token for a connection
+# @connector_router.post("/connector/create_connection_invite_token", tags=["Connector"])
+# async def connection_invite_token(organization_id: str, vendor: str):
+#     try:
+#         return await create_connection_invite_token_logic(organization_id, vendor)
+#     except Exception as e:
+#         raise e
 
 
 @connector_router.get("/connector/list_connections", tags=["Connector"])
@@ -110,3 +49,17 @@ async def list_connection(organization_id: str):
             raise HTTPException(status_code=response.status_code, detail=response.text)
     except Exception as e:
         raise e
+
+
+# An API endpoint to fetch the status of a connection:
+# It will query the connection table and check if is_active is True or False
+# @connector_router.get("/connector/connection_status", tags=["Connector"])
+# async def connection_status(leen_connection_id: str, db: Session = Depends(get_db)):
+#     try:
+#         db_conn = db.query(ConnectionModel).filter(ConnectionModel.leen_connection_id == leen_connection_id).first()
+#         if db_conn:
+#             return {"is_active": db_conn.is_active}
+#         else:
+#             raise HTTPException(status_code=404, detail="Connection not found")
+#     finally:
+#         db.close()

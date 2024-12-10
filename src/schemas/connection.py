@@ -38,3 +38,11 @@ class Connection(BaseModel):
 
 class DeleteConnectionResponse(BaseModel):
     detail: str
+
+
+class CreateConnectionResponse(BaseModel):
+    connection_id: str
+    message: str
+    identifier: str
+    vendor: str
+    is_active: bool

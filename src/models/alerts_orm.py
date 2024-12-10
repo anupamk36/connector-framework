@@ -1,5 +1,5 @@
-from sqlalchemy import Column, String, DateTime, JSON
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, String, DateTime, Integer
+from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -7,9 +7,10 @@ Base = declarative_base()
 
 class AlertsModel(Base):
     __tablename__ = "alerts"
+    request_id = Column(Integer, autoincrement=True, primary_key=True, index=True)
     connection_id = Column(UUID(as_uuid=True))
     organization_id = Column(UUID(as_uuid=True))
-    id = Column(UUID(as_uuid=True), primary_key=True, index=True)
+    id = Column(UUID(as_uuid=True), index=True)
     vendor_id = Column(String)
     title = Column(String)
     description = Column(String)
@@ -35,5 +36,5 @@ class AlertsModel(Base):
     windows_sid = Column(String)
     active_directory_user_id = Column(String)
     active_directory_domain = Column(String)
-    device = Column(JSON)
-    mitre = Column(JSON)
+    device = Column(JSONB)
+    mitre = Column(JSONB)
