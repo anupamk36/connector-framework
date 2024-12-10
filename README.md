@@ -1,8 +1,3 @@
-This has been integrated into [fir-connector](https://github.com/Cowbell-Cyber/fir-connector)
-
-
-
-
 # Leen Connectors Integration
 
 This repository contains code for integrating with Leen to fetch insights from various connectors.
