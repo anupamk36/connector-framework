@@ -23,8 +23,9 @@ The API has endpoints for creating, updating, deleting, and fetching data from c
 
 ## Contributing
 
-Contributions are welcome! Please read the contributing guidelines before making any changes.
+Contributions are welcome!
 
 ## License
 
-This project is licensed under the terms of the MIT license.
+This project is licensed under the terms of the MIT license.# connector-leen-integration
+# connector-framework
