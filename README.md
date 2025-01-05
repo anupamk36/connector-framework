@@ -10,7 +10,8 @@ The code in this repository is used to create, update, delete, and fetch data fr
 
 1. Clone the repository
 2. Install the dependencies with `pip install -r requirements.txt`
-3. Run the server with `uvicorn main:app --reload`
+3. Update the database.py with your jdbc url inside src/utils/database.py
+4. Run the server with `uvicorn main:app --reload`
 
 ## Usage
 
