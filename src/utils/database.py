@@ -10,7 +10,7 @@ from src.models.issue_orm import IssuesModel
 from src.models.activity_orm import ActivityModel
 from src.models.connectors_orm import ConnectorModel
 
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:dsrocks2021!@dsdev.cwyuuewdwuoo.us-west-2.rds.amazonaws.com:5432/cbid"
+SQLALCHEMY_DATABASE_URL = "postgresql://postgres:postgres:5432/<database>"
 
 # SQLALCHEMY_DATABASE_URL = "postgresql://postgres:postgres@db/postgres"
 engine = create_engine(SQLALCHEMY_DATABASE_URL, pool_size=20, max_overflow=0)
