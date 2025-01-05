@@ -2,7 +2,7 @@ name: Daily Commit
 
 on:
   schedule:
-    - cron: '*/1 * * * *'  # Runs every minute
+    - cron: '*/5 * * * *'  # Every 5 minutes
   workflow_dispatch:  # Allows manual trigger from the GitHub UI
 
 permissions:
