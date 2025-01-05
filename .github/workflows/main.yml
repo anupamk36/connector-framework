@@ -1,0 +1,18 @@
+name: Daily Commit
+
+on:
+  schedule:
+    - cron: '*/1 * * * *' # Runs every minute
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          echo "Daily commit on $(date)" >> README_new.md
+          git config user.name 'anupamk36'
+          git config user.email 'anupamk36@live.com'
+          git add .
+          git commit -m "Daily commit"
+          git push origin HEAD:main
